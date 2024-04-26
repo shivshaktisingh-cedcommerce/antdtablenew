@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dropdown, Grid, Modal, Pagination } from 'antd';
+import { Dropdown, Modal } from 'antd';
 import {
   Avatar,
   Table,
@@ -7,7 +7,6 @@ import {
   Flex,
   Tag,
   Button,
-  Select,
   Input,
   Space
 } from "antd";
@@ -18,7 +17,7 @@ import { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import EditUser from './EditUser';
 import { useDispatch, useSelector } from 'react-redux';
-import { MenuItem, Snackbar, SnackbarContent, TextField } from '@mui/material';
+import {  Snackbar, SnackbarContent, TextField } from '@mui/material';
 import { addGroup, bulkDelete, deleteUser } from '../redux/slices/userData';
 
 
@@ -38,22 +37,26 @@ export default function UserDataTable() {
   const[deleteModal , setDeleteModal] = React.useState(false);
   const[itemToDelete , setItemToDelete] = React.useState(null);
   const[bulkDeleteModal , setBulkDeleteModal] = React.useState(false);
+  // const [current , setCurrent]= React.useState(1);
+  // const [pageSize , setPageSize]= React.useState(5);
+  const state = useSelector((store)=> store.userSlice);
+
   const [snackBarObj , setSnackBarObj] = useState({
     flag:false ,
     text:''
   })
 
-  const state = useSelector((store)=> store.userSlice);
+ 
   const dispatch = useDispatch();
 
 
 
-  const [tableParams, setTableParams] = React.useState({
-    pagination: {
-      current: 1,
-      pageSize: 5,
-    },
-  });
+  // const [tableParams, setTableParams] = React.useState({
+  //   pagination: {
+  //     current: 1,
+  //     pageSize: 5,
+  //   },
+  // });
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -323,6 +326,7 @@ export default function UserDataTable() {
   }
 
   const handleBulkDelete = () =>{
+    
     // if(e=== 'delete'){
       setBulkDeleteModal(true);
 
@@ -336,13 +340,10 @@ setBulkDeleteModal(false);
   }
 
   const handleConfirmBulkDeleteUser = () =>{
-    // console.log(action.payload)
     let data = [...state.userDataDetails];
-    let newData = data.filter((item)=>{
-      if(!(selectedBulkKey.includes(item.key))){
-     return item;
-      }
-    })
+    let newData = data.filter((item)=> !(selectedBulkKey.includes(item.key))
+     
+    )
     dispatch(bulkDelete(newData));
     setBulkDeleteModal(false);
     setSnackBarObj({
@@ -352,9 +353,10 @@ setBulkDeleteModal(false);
 
   }
 
-  const onShowSizeChange = (current, pageSize) => {
-    console.log(current, pageSize);
-  };
+  // const onShowSizeChange = (current, pageSize) => {
+  //   console.log(current, pageSize);
+  //   const datas=[...state.userDataDetails]
+  // };
 
   const items = [
     {
@@ -367,7 +369,7 @@ setBulkDeleteModal(false);
     {
       key: '2',
       label: (
-    <Button style={{width:'100%'}} key={'delete'} onClick={handleBulkDelete}>Delete</Button>
+    <Button style={{width:'100%'}} key={'delete'} disabled={selectedBulkKey.length === 0} onClick={handleBulkDelete}>Delete</Button>
       ),
     },
     
@@ -406,19 +408,18 @@ setBulkDeleteModal(false);
               setSelectedBulkKey(e);
             },
         }}
-      
-        // pagination={tableParams.pagination}
-        pagination={false}
-      
-        onChange={(e)=>{setTableParams(e)}}
-       
+        pagination={{
+          showTotal:(total) => `Total ${total} items`,
+          defaultPageSize:5,
+          showQuickJumper:true,
+          showSizeChanger:true,
+          pageSizeOptions:[5 , 10 , 15, 20],
+          defaultCurrent:1
+
+        }}
+    
     />
-      <Pagination
-      showSizeChanger
-      onShowSizeChange={onShowSizeChange}
-      defaultCurrent={3}
-      total={state.userDataDetails.length}
-    />
+
     <Modal open={open}  onCancel={handleCloseModal}  footer={null}  centered>
       <CreateUser handleCloseModal={handleCloseModal}/>
     </Modal>

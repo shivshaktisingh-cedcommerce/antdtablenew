@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
-    CaretDownOutlined,
-    GroupOutlined,
-    NotificationFilled,
-    SettingOutlined,
+    GroupOutlined,   
     UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Badge, Breadcrumb, Button, Card, Dropdown, Flex, Layout, Menu, theme, Typography } from 'antd';
+import { Avatar,  Breadcrumb,  Card, Flex, Layout, Menu, theme } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const { Text, Link } = Typography;
+// const { Text, Link } = Typography;
 
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -31,42 +28,20 @@ const AppLayout = ({ children }) => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: { colorBgContainer },
     } = theme.useToken();
     const [current, setCurrent] = useState('1');
     const onClick = (e) => {
         navigate('/')
-        console.log('click ', e);
         setCurrent(e.key);
       };
 
-      const handleLogout = () =>{
-        sessionStorage.removeItem('loggedIn');
-        navigate('/');
-      }
+    //   const handleLogout = () =>{
+    //     sessionStorage.removeItem('loggedIn');
+    //     navigate('/');
+    //   }
 
 
-  const logoutItems = [
-    {
-      key: '1',
-      label: (
-        <Button style={{width:'100%'}} key={'edit'} disabled>Shiv Shakti</Button>
-      ),
-    },
-    {
-      key: '2',
-      label: (
-    <Button style={{width:'100%'}} key={'delete'} icon={<SettingOutlined />}>Settings</Button>
-      ),
-    },
-    {
-        key: '3',
-        label: (
-      <Button style={{width:'100%'}} key={'delete'} onClick={handleLogout}>Logout</Button>
-        ),
-      },
-    
-  ];
 
     useEffect(() => {
         let loggedIn = sessionStorage.getItem('loggedIn');
@@ -75,7 +50,7 @@ const AppLayout = ({ children }) => {
 
         }
 
-    }, [location])
+    }, [location , navigate])
     return (
         <Layout
             style={{
@@ -104,28 +79,14 @@ const AppLayout = ({ children }) => {
                         <Avatar size={'large'} src="https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?size=626&ext=jpg" />
                        
                     </Flex>
-                    {/* <Dropdown
-                      menu={{
-                        logoutItems,
-                          }}
-                     placement="bottomRight"
-                     >
-                        <Button icon={<CaretDownOutlined />}>Delete</Button>
-                     </Dropdown>  */}
+                    
                 </Header>
                 <Content
                     style={{
                         margin: '0 16px',
                     }}
                 >
-                    <Breadcrumb
-                        style={{
-                            margin: '16px 0',
-                        }}
-                    >
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
+                   <Breadcrumb items={[{ title: 'sample' }]} />
                     <Card>
                     {children}
                     </Card>

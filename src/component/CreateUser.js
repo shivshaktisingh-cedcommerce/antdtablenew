@@ -24,7 +24,6 @@ const MenuProps = {
 
 export default function CreateUser({handleCloseModal}) {
     const selector = useSelector((store)=> store.userSlice);
-    console.log(selector.userDataDetails);
     const dispatch = useDispatch();
     const [snackBarObj , setSnackBarObj] = useState({
         flag:false ,

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {
-    GroupOutlined,   
-    UserOutlined,
-} from '@ant-design/icons';
+import { Button, Popover, Select } from "antd";
+import { GroupOutlined,    TeamOutlined,    UserOutlined} from '@ant-design/icons';
 import { Avatar,  Breadcrumb,  Card, Flex, Layout, Menu, theme } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { SettingsOutlined } from '@mui/icons-material';
+import {   Route, Routes } from 'react-router-dom'
 
 // const { Text, Link } = Typography;
 
@@ -28,20 +28,31 @@ const AppLayout = ({ children }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
+    const [placement, SetPlacement] = useState("topLeft");
+ 
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-    const [current, setCurrent] = useState('1');
-    const onClick = (e) => {
-        console.log(e)
-        navigate('/group')
-        setCurrent(e.key);
-      };
+    const [render, updateRender] = useState(1);
+    const selectedKey = useLocation().pathname;
 
-    //   const handleLogout = () =>{
-    //     sessionStorage.removeItem('loggedIn');
-    //     navigate('/');
-    //   }
+      const handleLogout = () =>{
+        sessionStorage.removeItem('loggedIn');
+        navigate('/');
+      }
+
+      const handleClick = (menu) =>{
+        updateRender(menu.key);
+
+      }
+
+      const highlight = () => {
+        if (selectedKey === '/dashboard'){
+          return ['2']
+        } else if (selectedKey === '/group'){
+          return ['3']
+        }
+      }
 
 
 
@@ -49,10 +60,13 @@ const AppLayout = ({ children }) => {
         let loggedIn = sessionStorage.getItem('loggedIn');
         if (!loggedIn) {
             navigate('/');
-
         }
 
     }, [location , navigate])
+
+
+
+    
     return (
         <Layout
             style={{
@@ -62,7 +76,44 @@ const AppLayout = ({ children }) => {
         >
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 <div className="demo-logo-vertical" />
-                <Menu  theme="dark" onClick={onClick} defaultSelectedKeys={['1']} selectedKeys={[current]} mode="inline" items={items} />
+                <Menu  theme="dark"  selectedKeys={highlight()} mode="inline"  items={[
+                    {
+                        key: '1',
+                        label: "",
+                      
+                    },
+                    {
+                        key: '2',
+                        icon: <UserOutlined />,
+                        label: "User Management",
+                        onClick: () => { navigate('/dashboard')}
+                    },
+                    {
+                        key: '3',
+                        icon: <TeamOutlined />,
+                        label: "Group Management",
+                        onClick: () => { navigate('/group')}
+                    } ,
+                    {
+                        key: '4',
+                        icon: <TeamOutlined />,
+                        label: "Others",
+                        children: [ 
+                        {
+                            key: '5',
+                            label: "Submenu 1",
+                            onClick: () => { navigate('/other')}
+                        },
+                        {
+                            key: '6',
+                            label: "Submenu 2",
+                            onClick: () => { navigate('/other')}
+                        },
+                        ]
+                    }
+            ]} />
+               
+               
             </Sider>
               
             <Layout>
@@ -80,7 +131,36 @@ const AppLayout = ({ children }) => {
 
                     <Flex wrap='nowrap' align='center'>
                         <Avatar size={'large'} src="https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?size=626&ext=jpg" />
-                       
+                        <div className="icon-select">
+              <Button
+                icon={<SettingsOutlined />}
+                type="dashed"
+                shape="circle"
+              />
+ 
+              <Select
+                popupMatchSelectWidth={false}
+                placement={placement}
+                onChange={handleLogout}
+                options={[
+                  {
+                    value: "profile",
+                    label: "Profile",
+                    disabled:true
+                  },
+                  {
+                    value: "setting",
+                    label: "Settiing",
+                    disabled:true
+
+                  },
+                  {
+                    value: "logOut",
+                    label: "Log Out",
+                  },
+                ]}
+              />
+            </div>
                     </Flex>
                     
                 </Header>
@@ -89,7 +169,7 @@ const AppLayout = ({ children }) => {
                         margin: '0 16px',
                     }}
                 >
-                   <Breadcrumb items={[{ title: 'sample' }]} />
+                   
                     <Card>
                     {children}
                     </Card>

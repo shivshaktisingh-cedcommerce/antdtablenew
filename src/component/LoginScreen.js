@@ -149,10 +149,11 @@ export default function LoginScreen() {
         md={6}
         >
             <Card 
+            
             className='side-section'
             sx={{display:'flex' , alignItems:'center' , justifyContent:'center'}}
             >
-            <img height={600} width={600} src="bg3.png"/>
+            <img className='img-class' src="bg3.png"/>
           </Card>
        </Grid>
         <Grid item xs={12} sm={6} md={6} component={Paper} elevation={6} square>

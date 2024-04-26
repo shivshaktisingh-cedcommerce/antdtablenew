@@ -1,8 +1,10 @@
 // 'use client';
-import {  Button, Checkbox, FormControl, Grid, InputLabel, ListItemText, MenuItem, Select, TextField, Typography } from "@mui/material";
+import {  Button, Checkbox, FormControl, Grid, InputLabel, ListItemText, MenuItem, Select, Snackbar, SnackbarContent, TextField, Typography } from "@mui/material";
 import ImageUpload from "./ImageUpload";
 import { useState } from "react";
 import OutlinedInput from '@mui/material/OutlinedInput';
+import { useDispatch } from "react-redux";
+import { updateUser } from "../redux/slices/userData";
 
 
 const ITEM_HEIGHT = 48;
@@ -31,7 +33,7 @@ const names = [
 
 
 
-export default function EditUser({item}) {
+export default function EditUser({item ,handleCloseModalEdit}) {
     const [userObject, setUserObject] = useState({
         name: item?.name || '',
         userName: item?.user ||'',
@@ -42,6 +44,12 @@ export default function EditUser({item}) {
         reEnterPassword: item?.reEnterPassword || '' ,
         image: item?.pick_url || null
     })
+    const [snackBarObj , setSnackBarObj] = useState({
+        flag:false ,
+        text:''
+      })
+
+    const dispatch = useDispatch();
 
     const [emailErrorObj, setEmailErrorObj] = useState({
         emailError: false,
@@ -62,9 +70,9 @@ export default function EditUser({item}) {
         );
     };
 
-    const handleFileSelect = (file, url) => {
-        // console.log('Selected file:', file), url;
-    };
+    const handleFileSelect = (url) => {
+        console.log(url)
+        setUserObject({...userObject , image:url})    };
 
     const handleChangeFields = (name, value) => {
         setUserObject({ ...userObject, [name]: value })
@@ -83,7 +91,26 @@ export default function EditUser({item}) {
         if (userObject.password !== userObject.reEnterPassword) {
             setPasswordErrorObj({ passwordError: true, passwordErrorText: 'Retype Password does not match with password.' });
         } else {
+           
             setPasswordErrorObj({ passwordError: false, passwordErrorText: '' });
+
+            dispatch(updateUser({
+                name: userObject.name,
+                user: userObject.userName,
+                empId: userObject.employeeId,
+                role: userObject.role,
+                email:userObject.email,
+                group:personName,
+                password:userObject.password,
+                reEnterPassword:userObject.reEnterPassword,
+                pick_url: userObject.image}))
+            setSnackBarObj({
+                flag:true , 
+                text:'User Updated Successfully.'
+            })
+            setTimeout(()=>{
+                handleCloseModalEdit()        
+            },1500)
         }
     }
     const ifAnyFieldIsEmpty = () => {
@@ -116,6 +143,16 @@ export default function EditUser({item}) {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     };
+
+    const handleClose = (event , reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+            setSnackBarObj({
+                flag:false , 
+                text:''
+            })
+      };
 
 
 
@@ -160,7 +197,7 @@ export default function EditUser({item}) {
                     </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} display={'flex'} justifyContent={'center'} >
-                    <TextField id="outlined-basic" label="Enter Employee Id" variant="outlined" fullWidth value={userObject.employeeId} onChange={(e) => handleChangeFields('employeeId', e.target.value)} />
+                    <TextField id="outlined-basic" disabled label="Enter Employee Id" variant="outlined" fullWidth value={userObject.employeeId} onChange={(e) => handleChangeFields('employeeId', e.target.value)} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} display={'flex'} justifyContent={'center'} >
                     <FormControl fullWidth>
@@ -194,6 +231,14 @@ export default function EditUser({item}) {
                     <Button variant="contained" onClick={handleSubmit} disabled={ifAnyFieldIsEmpty()} >Update</Button>
                 </Grid>
             </Grid>
+            <Snackbar
+                anchorOrigin={{vertical:'bottom' , horizontal:'center'}}
+                open={snackBarObj.flag}
+                autoHideDuration={4000}
+                onClose={handleClose}
+              >
+                <SnackbarContent sx={{background: '#00b200'}} message={snackBarObj.text} />
+                </Snackbar>
         </div>
 
     );

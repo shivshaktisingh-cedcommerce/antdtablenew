@@ -218,6 +218,18 @@ export const userSlice = createSlice({
     bulkDelete(state , action){
       state.userDataDetails = action.payload;
     } ,
+    updateUser(state , action) {
+      let data = [...state.userDataDetails];
+      let newData = data.map((item)=>{
+        if(item.empId === action.payload.empId){
+          return action.payload;
+        }else{
+         return item;
+        }
+      })
+
+      state.userDataDetails = newData;
+    }
   },
 });
 
@@ -226,5 +238,6 @@ export const {
   addGroup,
   deleteUser,
   bulkDelete,
+  updateUser,
 } = userSlice.actions;
 export default userSlice.reducer;

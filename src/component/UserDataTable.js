@@ -241,6 +241,10 @@ export default function UserDataTable() {
     setOpen(false);
   }
 
+  const handleCloseModalEdit =() =>{
+    setOpenEditModal(false)
+  }
+
   const handleCloseEditModal = () =>{
    
     setOpenEditModal(false);
@@ -424,7 +428,7 @@ setBulkDeleteModal(false);
       <CreateUser handleCloseModal={handleCloseModal}/>
     </Modal>
     <Modal open={openEditModal}  onCancel={handleCloseEditModal} footer={null}  centered>
-      <EditUser item={editModalData}/>
+      <EditUser item={editModalData} handleCloseModalEdit={handleCloseModalEdit}/>
     </Modal>
     <Modal  open={openModalGroup}  onCancel={handleCloseModalGroup} footer={(_) => (
           <>

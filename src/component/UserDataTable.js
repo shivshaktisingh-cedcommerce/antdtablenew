@@ -186,7 +186,7 @@ export default function UserDataTable() {
       title: "Employee Id",
       dataIndex: "empId",
       render: (item) => <Text strong>{item}</Text>,
-      defaultSortOrder: 'descend',
+      // defaultSortOrder: 'descend',
       sorter: (a, b) => a.empId - b.empId,
     },
     {

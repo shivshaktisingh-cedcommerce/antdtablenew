@@ -19,6 +19,7 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
+    getItem('', '0'),
       getItem('User Management', '1', <UserOutlined />),
       getItem('Group Management', '2', <GroupOutlined />),
 ]
@@ -32,7 +33,8 @@ const AppLayout = ({ children }) => {
     } = theme.useToken();
     const [current, setCurrent] = useState('1');
     const onClick = (e) => {
-        navigate('/')
+        console.log(e)
+        navigate('/group')
         setCurrent(e.key);
       };
 
@@ -60,8 +62,9 @@ const AppLayout = ({ children }) => {
         >
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 <div className="demo-logo-vertical" />
-                <Menu  theme="dark" onClick={onClick} defaultSelectedKeys={['sub1']} selectedKeys={[current]} mode="inline" items={items} />
+                <Menu  theme="dark" onClick={onClick} defaultSelectedKeys={['1']} selectedKeys={[current]} mode="inline" items={items} />
             </Sider>
+              
             <Layout>
                 <Header
                     style={{
